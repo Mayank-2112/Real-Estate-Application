@@ -1,7 +1,9 @@
 import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function SignIn() {
+  const {currentUser} = useSelector((state)=> state.user)
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [loadling, setLoading] = useState(false);
@@ -42,6 +44,7 @@ export default function SignIn() {
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className="text-3xl text-center font-semibold my-7">Profile</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <img src={currentUser.avatar} alt="profile" className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-5" />
         <input type="text" className="border p-3 rounded" placeholder='username' id='username' onChange={handleChange}/>
         <input type="email" className="border p-3 rounded" placeholder='email' id='email' onChange={handleChange}/>
         <input type="password" className="border p-3 rounded" placeholder='password' id='password' onChange={handleChange}/>
