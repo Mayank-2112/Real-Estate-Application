@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import {app} from '../firebase.js';
-import { updateUserStart, updateUserFailure, updateUserSuccess } from '../redux/user/userSlice.js';
+import { updateUserStart, updateUserFailure, updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutFailure, signOutStart, signOutSuccess } from '../redux/user/userSlice.js';
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -71,6 +71,37 @@ export default function Profile() {
       dispatch(updateUserFailure(error.message));
     }
   }
+  const handleDeleteUser = async ()=>{
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
+        method: "DELETE",
+      })
+      const data = await res.json();
+      if (data.success === false){
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+      
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+  const handleSignOut = async ()=>{
+    try {
+      dispatch(signOutStart());
+      const res = await fetch('/api/auth/signout');
+      const data = await res.json();
+      if (data === false){
+        dispatch(signOutFailure(data.message));
+        return;
+      }
+      dispatch(signOutSuccess(data));
+    } catch (error) {
+      dispatch(signOutFailure(error.message));
+    }
+  }
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className="text-3xl text-center font-semibold my-7">Profile</h1>
@@ -96,8 +127,8 @@ export default function Profile() {
         <button className="bg-green-700 text-white p-3 rounded uppercase hover:opacity-80">Create Listings</button>
       </form>
       <div className="flex justify-between mt-2">
-        <Link to={'/sign-up'}><span className="text-red-700">Delete Account</span></Link>
-        <Link to={'/sign-up'}><span className="text-red-700">LogOut</span></Link>
+        <Link to={'/sign-in'}><span onClick={handleDeleteUser} className="text-red-700">Delete Account</span></Link>
+        <Link to={'/sign-up'}><span onClick={handleSignOut} className="text-red-700">LogOut</span></Link>
       </div>
       <div className="text-center mt-2">
         <Link to={'/sign-up'}><span className="text-green-700">Show Listings</span></Link>
