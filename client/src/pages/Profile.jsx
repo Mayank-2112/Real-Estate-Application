@@ -124,7 +124,7 @@ export default function Profile() {
         <input type="password" className="border p-3 rounded" onChange={handleChange} placeholder='password' id='password' />
         <button disabled={loading} type='submit' className="bg-slate-700 text-white p-3 rounded uppercase hover:opacity-80">
         {loading ? 'Loading...' : 'Update'}</button>
-        <button className="bg-green-700 text-white p-3 rounded uppercase hover:opacity-80">Create Listings</button>
+        <Link className="bg-green-700 text-center text-white p-3 rounded uppercase hover:opacity-80" to={"/create-listing"}>Create Listings</Link>
       </form>
       <div className="flex justify-between mt-2">
         <Link to={'/sign-in'}><span onClick={handleDeleteUser} className="text-red-700">Delete Account</span></Link>
