@@ -180,13 +180,19 @@ export default function CreateListing() {
           <div className="flex gap-2 items-center text-center">
             <input type="number" id="regularPrice" className='p-3 rounded border border-gray-300' min='50' max='1000000' required 
             onChange={handleChange} value={formData.regularPrice}/>
-            <span>Regular Price <br />($/Month)</span>
+            <p>Regular Price</p>
+            {formData.type === 'rent' && (
+              <span className='text-xs'>($/month)</span>
+            )}
           </div>
           {formData.offer && (
           <div className="flex gap-2 items-center text-center">
             <input type="number" id="discountPrice" className='p-3 rounded border border-gray-300' min='50' max='1000000' required 
             onChange={handleChange} value={formData.discountPrice}/>
-            <span>Discount Price <br />($/Month)</span>
+            <p>Discounted price</p>
+            {formData.type === 'rent' && (
+              <span className='text-xs'>($/month)</span>
+            )}
           </div>
           )}
         </div>
