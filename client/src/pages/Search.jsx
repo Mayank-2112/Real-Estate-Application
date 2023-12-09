@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom';
+import ListingItem from '../components/ListingItem';
 
 export default function Search() {
   const navigate = useNavigate();
@@ -85,8 +86,8 @@ export default function Search() {
     navigate(`/search?${searhQuery}`);
   }
   return (
-    <div className='flex flex-col md:flex-row gap-4'>
-        <div className='p-7 md:min-h-screen border-b-2 md:border-r-2'>
+    <div className='flex flex-col md:flex-row gap-4 bg-slate-50'>
+        <div className='sticky p-3 md:min-h-screen border-b-2 md:border-r-2'>
           <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
             <div className='flex items-center gap-4 mt-4'>
               <label className='whitespace-nowrap font-semibold'> Search Term:-</label>
@@ -147,8 +148,20 @@ export default function Search() {
             <button className='uppercase p-3 w-full rounded-lg bg-slate-700 text-white hover:opacity-80'>Search</button>
           </form>
         </div>
-        <div className='p-7'>
-            <h1 className='text-3xl font-semibold text-slate-700'>Listing Result:-</h1>
+        <div className='py-5 px-1 flex-1'>
+            <h1 className='text-3xl font-semibold border-b text-slate-700'>Listing Result:-</h1>
+            <div className='p-7 flex flex-wrap gap-4'>
+              {!loading && listings.length === 0 && (
+                <p className="text-xl text-slate-700">No listings found!!</p>
+              )}
+              {loading && (
+                <p className="text-2xl text-center w-full text-slate-700">Loading..</p>
+              )}
+              {!loading && listings && listings.map((listing)=>(
+                <ListingItem key={listing._id} listing={listing}/>
+              ))}
+            </div>
+
         </div>
     </div>
   )
