@@ -14,8 +14,8 @@ export default function Search() {
     order: 'desc'
   });
   const [listings,setListings] = useState([]);
+  const [showMore,setShowMore] = useState(false);
   const [loading,setLoading] = useState(false);
-  console.log(listings);
   useEffect(()=>{
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
@@ -49,6 +49,13 @@ export default function Search() {
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
+      console.log(data.length);
+      if(data.length > 8){
+        setShowMore(true);
+      }
+      else{
+        setShowMore(false);
+      }
       setListings(data);
       setLoading(false);
     };
@@ -82,8 +89,24 @@ export default function Search() {
     urlParams.set('offer', sideBarData.offer)
     urlParams.set('sort', sideBarData.sort)
     urlParams.set('order', sideBarData.order)
-    const searhQuery = urlParams.toString()
-    navigate(`/search?${searhQuery}`);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  }
+  const onShowMoreClick = async ()=>{
+    const no_of_listings = listings.length;
+    const startIndex = no_of_listings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('startindex',startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+
+    const data = await res.json();
+    console.log(data);
+
+    if (data.length < 9){
+      setShowMore(false);
+    }
+    setListings([...listings,...data]);
   }
   return (
     <div className='flex flex-col md:flex-row gap-4 bg-slate-50'>
@@ -160,6 +183,12 @@ export default function Search() {
               {!loading && listings && listings.map((listing)=>(
                 <ListingItem key={listing._id} listing={listing}/>
               ))}
+
+              {showMore && (
+                <button onClick={onShowMoreClick} className='p-7 text-green-700 hover:underline'>
+                  Show More
+                </button>
+              )}
             </div>
 
         </div>
