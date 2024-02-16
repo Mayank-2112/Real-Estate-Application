@@ -4,15 +4,17 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css/bundle';
 import SwipeCore from 'swiper';
 import { Navigation} from 'swiper/modules';
+import ListingItem from '../components/ListingItem.jsx'
 export default function Home() {
   const [offer , setOffer] = useState([]);
   const [sell , setSell] = useState([]);
   const [rent , setRent] = useState([]);
+  console.log(offer);
   SwipeCore.use([Navigation]);
   useEffect(()=>{
     const fetchOfferListing = async()=>{
       try {
-        const res = await fetch('/api/listing/get?offer=true&limmit=4');
+        const res = await fetch('/api/listing/get?offer=true&limit=4');
         const data = await res.json();
         setOffer(data);
         fetchRentListing();
@@ -22,7 +24,7 @@ export default function Home() {
     }
     const fetchRentListing = async()=>{
       try {
-        const res = await fetch('/api/listing/get?type=rent&limmit=4');
+        const res = await fetch('/api/listing/get?type=rent&limit=4');
         const data = await res.json();
         setRent(data);
         fetchSellListing();
@@ -32,7 +34,7 @@ export default function Home() {
     }
     const fetchSellListing = async ()=>{
       try {
-        const res = await fetch('/api/listing/get?type=sell&limmit=4');
+        const res = await fetch('/api/listing/get?type=sell&limit=4');
         const data = await res.json();
         setSell(data);
       } catch (error) {
@@ -40,10 +42,8 @@ export default function Home() {
       }
     }
     fetchOfferListing();
-  })
-  const handleClick = ()=>{
-    
-  }
+  },[]);
+  
   return (
     <div>
       {/* top */}
@@ -59,22 +59,60 @@ export default function Home() {
           Let's get started...
         </Link>
       </div>
-      <button onClick={handleClick}>search</button>
 
       {/* swiper */}
-      <Swiper>
+      <Swiper navigation>
         {
-          offer && offer.length > 0 && offer.map((listing)=>{
+          offer && offer.length > 0 && offer.map((listing)=>(
             <SwiperSlide>
-              <div className="h-[550px]" key={listing._id} style={{background: `url(${listing.imageUrls[0]}), center no-repeat `, backgroundSize:'cover'}}></div>
+              <div className="h-[550px]" key={listing._id} style={{background: `url(${listing.imageUrls[0]}) center no-repeat `, backgroundSize:'cover'}}></div>
             </SwiperSlide>
-          })
+          ))
         }
       </Swiper>
-
-
-
       {/* listings */}
+
+      <div className='max-w-7xl mx-auto p-3 flex flex-col gap-8 my-10'>
+        {offer && offer.length > 0 && (
+          <div className=''>
+            <div className='my-3'>
+              <h2 className='text-2xl font-semibold text-slate-600'>Recent offers</h2>
+              <Link className='text-sm text-blue-800 hover:underline' to={'/search?offer=true'}>Show more offers</Link>
+            </div>
+            <div className='flex flex-wrap gap-4'>
+              {offer.map((listing) => (
+                <ListingItem listing={listing} key={listing._id} />
+              ))}
+            </div>
+          </div>
+        )}
+        {rent && rent.length > 0 && (
+          <div className=''>
+            <div className='my-3'>
+              <h2 className='text-2xl font-semibold text-slate-600'>Recent places for rent</h2>
+              <Link className='text-sm text-blue-800 hover:underline' to={'/search?type=rent'}>Show more places for rent</Link>
+            </div>
+            <div className='flex flex-wrap gap-4'>
+              {rent.map((listing) => (
+                <ListingItem listing={listing} key={listing._id} />
+              ))}
+            </div>
+          </div>
+        )}
+        {sell && sell.length > 0 && (
+          <div className=''>
+            <div className='my-3'>
+              <h2 className='text-2xl font-semibold text-slate-600'>Recent places for sale</h2>
+              <Link className='text-sm text-blue-800 hover:underline' to={'/search?type=sale'}>Show more places for sale</Link>
+            </div>
+            <div className='flex flex-wrap gap-4'>
+              {sell.map((listing) => (
+                <ListingItem listing={listing} key={listing._id} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

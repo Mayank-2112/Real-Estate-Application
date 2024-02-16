@@ -36,7 +36,7 @@ export default function Header() {
                 
             </form>
             <ul className='flex gap-[20px]'>
-              <li className='hidden sm:inline text-slate-700 hover:underline'><Link to="/home">Home</Link></li>
+              <li className='hidden sm:inline text-slate-700 hover:underline'><Link to="/">Home</Link></li>
               <li className='hidden sm:inline text-slate-700 hover:underline'><Link to="/about">About</Link></li>
               
                 {currentUser ?(<Link to='/profile'>
